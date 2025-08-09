@@ -1,0 +1,11 @@
+[Unit]
+Description=Start python script on boot
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/kali/IS
+ExecStart=/usr/bin/sudo /usr/bin/python3 /home/kali/IS/minimalfinal0.py &
+
+[Install]
+WantedBy=multi-user.target

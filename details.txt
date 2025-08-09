@@ -1,0 +1,63 @@
+# Contributed by:
+
+# Adarsh D
+# Yash Deshpande
+
+
+# Automated Wi-Fi Jammer and password cracker with Raspberry Pi
+
+## Project Overview
+
+This project demonstrates the automation of common Wi-Fi security testing techniques – continuous deauthentication (jamming) and WPA/WPA2 password cracking – using a Raspberry Pi 4 and the Aircrack-ng suite.
+
+The system is designed to run autonomously on a Raspberry Pi upon boot, continuously cycling between jamming the target network and attempting to capture and crack the Wi-Fi password.
+
+## Project Components
+
+1.  Raspberry Pi 4 Model B (1GB RAM): The embedded system platform for running the attack tools.
+2.  Monitor Mode Capable Wi-Fi Adapter: An external Wi-Fi adapter that supports putting the wireless interface into monitor mode, which is necessary for packet capture and injection.
+3.  Realme Powerbank (10000 mAh): Provides portable power to the Raspberry Pi for autonomous operation.
+
+4.  Kali Linux on Raspberry Pi: The operating system installed on the Raspberry Pi, chosen for its pre-installed Aircrack-ng suite and penetration testing tools.
+5.  Aircrack-ng Suite: A collection of tools used for Wi-Fi network auditing, including:
+    * `airodump-ng`: For capturing Wi-Fi packets and displaying information about nearby networks.
+    * `aireplay-ng`: For injecting frames, including deauthentication packets.
+    * `aircrack-ng`: For cracking WEP and WPA/WPA2 passwords.
+
+6.  Python Script (`minimalfinal0.py`): A custom Python script that orchestrates the jamming and password cracking attacks using the Aircrack-ng tools.
+7.  Configuration File (`wifi_config.txt`): A simple text file containing the SSID of the target personal Wi-Fi hotspot.
+8.  Dictionary File (`rockyou.txt`): A text file containing a list of potential passwords used for the dictionary attack.
+9.  Systemd Service (`hacking.service`): A systemd unit file configured to automatically run the Python script upon the Raspberry Pi's boot.
+
+## Implementation Steps
+
+1.  Install Kali Linux on Raspberry Pi 4: Flash the Kali Linux ARM image onto an SD card and boot the Raspberry Pi from it.
+2.  Install Aircrack-ng Suite: This comes pre-installed with Kali
+3.  Load the Python Script and Configuration Files: Create a directory named `IS` in the `/home/kali/` directory and place the `minimalfinal0.py`, `wifi_config.txt`, and `rockyou.txt` files inside it. Ensure `wifi_config.txt` contains the SSID of the personal hotspot.
+4.  Create the Systemd Service File (`hacking.service`):
+    * Create a new file named `hacking.service` in the `/etc/systemd/system/` directory using a text editor.
+
+        [Unit]
+        Description=Start python script on boot
+        After=network.target
+
+        [Service]
+        User=root
+        WorkingDirectory=/home/kali/IS
+        ExecStart=/usr/bin/sudo /usr/bin/python3 /home/kali/IS/minimalfinal0.py &
+
+        [Install]
+        WantedBy=multi-user.target
+
+5.  Enable and Start the Systemd Service:
+    * Enable the service to start on boot: `sudo systemctl enable hacking.service`
+    * Start the service immediately: `sudo systemctl start hacking.service`
+    * You can check the status of the service using: `sudo systemctl status hacking.service`
+
+6.  Autonomous Operation: Once the service is enabled, you can connect the Raspberry Pi to the Realme power bank. Upon booting, the Raspberry Pi will automatically run the `minimalfinal0.py` script.
+7.  Testing and Results: The script will continuously jam the target Wi-Fi for 15 seconds, then attempt to capture a handshake and crack the password for 1 minute. The output of the password cracking attempts (whether successful or not) will be written to the `cracked_passwords.txt` file in the `/home/kali/IS/` directory.
+8.  Accessing Results: After allowing the script to run for a sufficient time, you can connect the Raspberry Pi to your laptop (e.g., via SSH or by taking out the SD card) and examine the `cracked_passwords.txt` file to see the results.
+
+## Observed Performance
+
+In testing, the Raspberry Pi 4 with this setup took approximately 5 minutes to potentially crack a Wi-Fi password from a dictionary containing around 10^5 passwords.
