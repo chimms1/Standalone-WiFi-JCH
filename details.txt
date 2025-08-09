@@ -1,9 +1,3 @@
-# Contributed by:
-
-# Adarsh D
-# Yash Deshpande
-
-
 # Automated Wi-Fi Jammer and password cracker with Raspberry Pi
 
 ## Project Overview
